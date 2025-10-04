@@ -1,0 +1,88 @@
+VSDBabySoC – Fundamentals of SoC Design
+
+The VSDBabySoC is a simplified System-on-Chip (SoC) design created for learning SoC fundamentals.
+It integrates a RISC-V core (rvmyth), a PLL module, and a DAC module, demonstrating how multiple IP blocks interact inside an SoC.
+
+This repo helps you:
+
+Understand SoC integration concepts
+
+Run pre-synthesis and post-synthesis simulations
+
+Visualize dataflow using GTKWave
+
+Document observations for learning/assignments
+
+Project Structure
+VSDBabySoC/
+├── src/
+│   ├── include/
+│   │   ├── sandpiper.vh
+│   │   └── other header files...
+│   ├── module/
+│   │   ├── vsdbabysoc.v      # Top-level SoC integrating all components
+│   │   ├── rvmyth.v          # RISC-V core
+│   │   ├── avsdpll.v         # PLL module
+│   │   ├── avsddac.v         # DAC module
+│   │   └── testbench.v       # Testbench for simulation
+├── output/
+│   ├── pre_synth_sim/        # Stores pre-synthesis simulation results
+│   ├── post_synth_sim/       # Stores post-synthesis simulation results
+│   └── compiled_tlv/         # Compiled intermediate files (if needed)
+└── synthesized/
+    └── vsdbabysoc.synth.v    # Synthesized netlist
+
+ Requirements
+
+Icarus Verilog (iverilog) → for simulation
+
+GTKWave → to view .vcd waveforms
+
+A Unix/Linux environment (Ubuntu recommended)
+
+Install on Ubuntu:
+
+sudo apt-get update
+sudo apt-get install iverilog gtkwave
+
+ Workflow
+Step 1 – Clone the Repo
+
+
+Step 2 – Compile BabySoC
+
+Pre-Synthesis Simulation
+
+iverilog -o output/pre_synth_sim/pre_synth_sim.out -DPRE_SYNTH_SIM \
+    -I src/include -I src/module \
+    src/module/testbench.v src/module/vsdbabysoc.v
+cd output/pre_synth_sim
+./pre_synth_sim.out
+
+
+Post-Synthesis Simulation
+
+iverilog -o output/post_synth_sim/post_synth_sim.out -DPOST_SYNTH_SIM \
+    -I src/include -I src/module \
+    src/module/testbench.v output/synthesized/vsdbabysoc.synth.v
+cd output/post_synth_sim
+./post_synth_sim.out
+
+Step 3 – Generate .vcd Waveforms
+
+Pre-synthesis → output/pre_synth_sim/pre_synth_sim.vcd
+
+Post-synthesis → output/post_synth_sim/post_synth_sim.vcd
+
+Step 4 – Open in GTKWave
+gtkwave output/pre_synth_sim/pre_synth_sim.vcd
+
+
+Use signal hierarchy to add CPU, PLL, DAC, and bus signals for analysis.
+ Learning Context
+
+BabySoC = simplified SoC → CPU + PLL + DAC
+
+Great for learning integration, simulation, and debugging before scaling to real SoCs.
+
+Bridges the gap between functional modeling → RTL → synthesis → physical design
